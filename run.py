@@ -363,11 +363,11 @@ class COCOClient(QMainWindow):
             file_menu.addAction(self.menu_setting)
             self.menu_setting.triggered.connect(self.openSetting)
 
-            # file_menu = self.menubar.addMenu("이미지")
-            # # Menu 편집 > 설정
-            # self.menu_image_rembg = QAction("누끼")     
-            # file_menu.addAction(self.menu_image_rembg)
-            # self.menu_image_rembg.triggered.connect(self.openRemoveBg)
+            file_menu = self.menubar.addMenu("테스트")
+            # Menu 편집 > 설정
+            self.menu_test1 = QAction("테스트1")     
+            file_menu.addAction(self.menu_test1)
+            self.menu_test1.triggered.connect(self.testRun1)
 
 
             # Button
@@ -469,39 +469,6 @@ class COCOClient(QMainWindow):
             log.printLog("openMakeFolder")
         except Exception as e:
             log.printException(e)
-    
-    # Menu Action 이미지 누끼
-    def openRemoveBg(self):
-        try:
-            options = QFileDialog.Options()
-            options |= QFileDialog.ReadOnly
-            file_path, _ = QFileDialog.getOpenFileName(self, "파일 선택", "", "All Files (*);;Image Files (*.png *.jpg *.jpeg)", options=options)
-            if file_path:
-                log.printLog(f"선택한 파일: {file_path}")
-                dir_name = os.path.dirname(file_path)
-                base_name = os.path.basename(file_path)
-                file_name, file_ext = os.path.splitext(base_name)
-                remove_bg_file_name = file_name + "_rembg"
-                log.printLog(f"경로: {dir_name}, 파일명: {file_name}, 확장자: {file_ext}")
-                new_file_path = dir_name + os.sep + remove_bg_file_name + ".png"
-                if self.removeBackgroundImage(file_path, new_file_path):
-                    # self.worker.sendLog("이미지 변환 완료: " + remove_bg_file_name + ".png")
-                    QFileDialog.getOpenFileName(self, "파일 변환 결과", dir_name, "All Files (*);;Image Files (*.png *.jpg *.jpeg)", options=options)
-                # else:
-                    # self.worker.sendLog("이미지 변환에 실패 했습니다.")
-        
-        except Exception as e:
-            log.printException(e)
-
-    def removeBackgroundImage(self, source_path, target_path):
-        try:
-            input = Image.open(source_path)
-            output = remove(input)
-            output.save(target_path)
-            return True
-        except Exception as e:
-            log.printException(e)
-        return False
 
     def updateLog(self, log_str):
         self.log_list.insert(0,log_str)
@@ -524,6 +491,29 @@ class COCOClient(QMainWindow):
             # self.cb_headless.setEnabled(True)
             self.worker.stop()
             self.worker.quit()
+            
+    def sendLog(self, log_str):
+        try:
+            self.updateLog(log_str)
+        except Exception as e:
+            log.printException(e)
+            
+    # Menu Test 1
+    def testRun1(self):
+        try:
+            parser_manager = ParserManager('chrome', False, self)
+            file_path = r'N:\개인\상품\오너클랜\W0DB52D\W0DB52D_01.jpg'
+            # INSERT_YOUR_CODE
+            if not os.path.exists(file_path):
+                log.printLog(f"File not found: {file_path}")
+                self.updateLog(f"File not found: {file_path}")
+                return
+            
+            thumbnail_url = parser_manager.uploadImage(file_path)
+            log.printLog(thumbnail_url)
+            self.updateLog(thumbnail_url)
+        except Exception as e:
+            log.printException(e)
 
 
 if __name__ == '__main__':

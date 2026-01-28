@@ -444,6 +444,102 @@ class ApiManager:
 
 		return None
 	
+	def parsingInsertBulkLink(self, params):
+		try:
+			cookies = params.get("cookies", None)
+			url = F"https://sell.smartstore.naver.com/api/v2/product-photos/bulk-upload"
+			headers = {
+				"accept": "*/*",
+				"accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+				"cache-control": "no-cache",
+				"logic": "PART",
+				"pragma": "no-cache",
+				"referer": F"https://sell.smartstore.naver.com/",
+				"sec-fetch-dest": "empty",
+				"sec-fetch-mode": "cors",
+				"sec-ch-ua-mobile": "?0",
+				'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+				"logic": "PART",
+				"Ect": "4g",
+				"sec-fetch-site": "same-origin",
+				"X-Current-State": "https://sell.smartstore.naver.com/#/products/bulkadd",
+				"X-Current-Statename": "main.product.bulkadd",
+				"X-To-Statename": "main.product.bulkadd",
+				"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+			}
+			# user_agent = ""
+			referer = F"https://sell.smartstore.naver.com/"
+			# cookies = None
+			# timeout = (5, 15)
+			# allow_redirects = True
+			method = "GET"
+			# postdata = None
+			# data_type = None
+			# proxy setting
+			use_proxy = True
+			# proxy = {'http':"socks5://socks.marketingtool.co.kr:10000", 'https':"socks5://socks.marketingtool.co.kr:10000"}
+			proxy = None
+			response = ContentLoader.getContent(url, headers=headers, referer=referer, method=method, proxy=proxy, cookies=cookies)
+			
+			return response.text
+		except Exception as e:
+			log.printException(e)
+
+	def uploadImageToSmartstore(self, params):
+		try:
+			popup_url = params.get('popupUrl', None)
+			pincode = params.get('pincode', None)
+			img_path = params.get('img_path', None)
+			cookies = params.get('cookies', None)
+
+			if not popup_url or not pincode or not img_path or not cookies:
+				return False
+
+			url = popup_url[0:popup_url.index('simpleUploader')] + "simpleUpload/0"
+			headers = {
+				"accept": "*/*",
+				"accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+				"cache-control": "no-cache",
+				"logic": "PART",
+				"pragma": "no-cache",
+				"referer": popup_url,
+				"sec-fetch-dest": "empty",
+				"sec-fetch-mode": "cors",
+				"sec-ch-ua-mobile": "?0",
+				'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+				"logic": "PART",
+				"sec-fetch-site": "same-origin",
+				"x-requested-with": "XMLHttpRequest",
+				"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+			}
+			# user_agent = ""
+			referer = popup_url
+			# cookies = None
+			# timeout = (5, 15)
+			# allow_redirects = True
+			method = "POST"
+			postdata = {
+				'pin': pincode,
+				'denyAnimatedImage':'',
+				'skipXcamFiltering':''
+			}
+			# data_type = None
+			# proxy setting
+			use_proxy = True
+			# proxy = {'http':"socks5://socks.marketingtool.co.kr:10000", 'https':"socks5://socks.marketingtool.co.kr:10000"}
+			proxy = None
+			files = {
+				'image': ('filename.jpg', open(img_path, 'rb'), 'image/jpeg')
+			}
+
+			response = ContentLoader.getContent(url, headers=headers, referer=referer, method=method, proxy=proxy, cookies=cookies, postdata=postdata, files=files)
+			
+			return response.text
+   
+		except Exception as e:
+			log.printException(e)
+		return False
+ 
 	#################################################################################################################################################
 	# 수집 아이템을 가지고 온다.
 	def getCrawlingItemList(self, params):

@@ -56,6 +56,8 @@ class ContentLoader:
 			allow_redirects = kargs.get('allow_redirects', True)
 
 			method = kargs.get('method', 'GET')
+   
+			files = kargs.get('files', None)
 
 			postdata = kargs.get('postdata', None)
 			data_type = kargs.get('data_type', None)
@@ -83,7 +85,7 @@ class ContentLoader:
 			if method.upper() == "GET":
 				response = requests.get(url, headers=headers, cookies=cookies, timeout=timeout, allow_redirects=allow_redirects, proxies=proxy)
 			elif method.upper() == "POST":
-				response = requests.post(url, headers=headers, cookies=cookies, timeout=timeout, allow_redirects=allow_redirects, proxies=proxy, data=postdata, json=json_data)
+				response = requests.post(url, headers=headers, cookies=cookies, timeout=timeout, allow_redirects=allow_redirects, proxies=proxy, data=postdata, json=json_data, files=files)
 				# log.printLog("Method POST")
 				# log.printLog("URL : " + url)
 				# log.printLog(postdata)
