@@ -128,6 +128,43 @@ class Worker(QThread):
                     except json.JSONDecodeError as e:
                         log.printLog(res_data)                        
                         self.sendLog("getCheckTagList Json Decoder Error")
+                time.sleep(0.2)
+
+                # Insert Image To Smartstore ==================================================================================
+                res_data = None
+                for _ in range(1,5):
+                    res_data = self.api_manager.getInsertImageToSmartstoreList({'user_id':user_id})
+                    if res_data:
+                        break
+                    time.sleep(0.2)
+                if res_data:
+                    try:
+                        res_data = json.loads(res_data)
+                        inserted_image_list = []
+                        insert_image_to_smartstore_list = res_data.get('data', [])
+                        image_count = len(insert_image_to_smartstore_list)
+                        ind = 0
+                        if len(insert_image_to_smartstore_list) > 0:
+                            self.sendLog("등록할 이미지 리스트를 가져옴 : " + str(image_count))
+                            for image_item in insert_image_to_smartstore_list:
+                                image_file_path = image_item['img_path']
+                                if not os.path.exists(image_file_path):
+                                    self.sendLog(f"File not found: {image_file_path}")
+                                    inserted_image_list.append({'prod_cd':image_item['prod_cd'], 'img_url':'', 'file_not_found':1})
+                                else:
+                                    thumbnail_url = self.parser_manager.uploadImage(image_file_path)
+                                    if isinstance(thumbnail_url, str):
+                                        thumbnail_url = f"http://shop1.phinf.naver.net{thumbnail_url}"
+                                        self.sendLog(f"Upload Image: {image_item['prod_cd']}")
+                                        inserted_image_list.append({'prod_cd':image_item['prod_cd'], 'img_url':thumbnail_url, 'file_not_found':0})
+                                    else:
+                                        self.sendLog(f"Upload Image Fail: {image_file_path}")
+
+                            self.api_manager.updateInsertImageToSmartstoreList({'user_id':user_id, 'inserted_image_list':json.dumps(inserted_image_list)})
+                            self.sendLog("이미지 등록 완료")
+                    except json.JSONDecodeError as e:
+                        log.printLog(res_data)                        
+                        self.sendLog("getCheckTagList Json Decoder Error")
 
                 time.sleep(1)
                 counting += 1
@@ -363,11 +400,11 @@ class COCOClient(QMainWindow):
             file_menu.addAction(self.menu_setting)
             self.menu_setting.triggered.connect(self.openSetting)
 
-            file_menu = self.menubar.addMenu("테스트")
-            # Menu 편집 > 설정
-            self.menu_test1 = QAction("테스트1")     
-            file_menu.addAction(self.menu_test1)
-            self.menu_test1.triggered.connect(self.testRun1)
+            # file_menu = self.menubar.addMenu("테스트")
+            # # Menu 편집 > 설정
+            # self.menu_test1 = QAction("테스트1")     
+            # file_menu.addAction(self.menu_test1)
+            # self.menu_test1.triggered.connect(self.testRun1)
 
 
             # Button

@@ -94,6 +94,89 @@ class ApiManager:
 			log.printException(e)
 
 		return None
+	
+	def getInsertImageToSmartstoreList(self, params):
+		try:
+			user_id = params.get("user_id", None)
+			url = ConfigCommon.HOST_ADDR + "/index.php?c=API&sc=GET_INSERT_IMAGE_TO_SMARTSTORE_LIST&proc=1"
+
+			headers = {
+				"accept": "*/*",
+				"accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+				"cache-control": "no-cache",
+				"logic": "PART",
+				"pragma": "no-cache",
+				"referer": ConfigCommon.HOST_ADDR,
+				"sec-fetch-dest": "empty",
+				"sec-fetch-mode": "cors",
+				"sec-ch-ua-mobile": "?0",
+				'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+				"logic": "PART",
+				"sec-fetch-site": "same-origin",
+				"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+			}
+			# user_agent = ""
+			referer = ConfigCommon.HOST_ADDR
+			# cookies = None
+			# timeout = (5, 15)
+			# allow_redirects = True
+			method = "POST"
+			postdata = {"user_id":user_id}
+			# data_type = None
+			# proxy setting
+			use_proxy = True
+			# proxy = {'http':"socks5://socks.marketingtool.co.kr:10000", 'https':"socks5://socks.marketingtool.co.kr:10000"}
+			proxy = None
+			response = ContentLoader.getContent(url, headers=headers, referer=referer, method=method, proxy=proxy, postdata=postdata)
+			
+			return response.text
+
+		except Exception as e:
+			log.printException(e)
+
+		return None
+	
+	def updateInsertImageToSmartstoreList(self, params):
+		try:
+			user_id = params.get("user_id", None)
+			inserted_image_list = params.get("inserted_image_list", [])
+			url = ConfigCommon.HOST_ADDR + "/index.php?c=API&sc=UPDATE_INSERT_IMAGE_TO_SMARTSTORE_LIST&proc=1"
+
+			headers = {
+				"accept": "*/*",
+				"accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+				"cache-control": "no-cache",
+				"logic": "PART",
+				"pragma": "no-cache",
+				"referer": ConfigCommon.HOST_ADDR,
+				"sec-fetch-dest": "empty",
+				"sec-fetch-mode": "cors",
+				"sec-ch-ua-mobile": "?0",
+				'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+				"logic": "PART",
+				"sec-fetch-site": "same-origin",
+				"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+			}
+			# user_agent = ""
+			referer = ConfigCommon.HOST_ADDR
+			# cookies = None
+			# timeout = (5, 15)
+			# allow_redirects = True
+			method = "POST"
+			postdata = {"user_id":user_id, "inserted_image_list":inserted_image_list}
+			# data_type = None
+			# proxy setting
+			use_proxy = True
+			# proxy = {'http':"socks5://socks.marketingtool.co.kr:10000", 'https':"socks5://socks.marketingtool.co.kr:10000"}
+			proxy = None
+			response = ContentLoader.getContent(url, headers=headers, referer=referer, method=method, proxy=proxy, postdata=postdata)
+			
+			return response.text
+
+		except Exception as e:
+			log.printException(e)
+
+		return None
 
 	def getCheckTagList(self, params):
 		try:
