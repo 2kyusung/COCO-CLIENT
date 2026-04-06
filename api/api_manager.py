@@ -566,6 +566,51 @@ class ApiManager:
 			log.printException(e)
 
 		return None
+
+	def parsingCheckRestrictTag(self, params):
+		try:
+			keyword = params.get("keyword", None)
+			encoded_keyword = url_parser.quote(keyword)
+			cookies = params.get("cookies", None)
+			url = F"https://sell.smartstore.naver.com/api/product/shared/is-restrict-tag?_action=isRestrictTag&tag=" + encoded_keyword
+
+			log.printLog(url)
+			headers = {
+				"accept": "*/*",
+				"accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+				"cache-control": "no-cache",
+				"logic": "PART",
+				"pragma": "no-cache",
+				"referer": F"https://sell.smartstore.naver.com/",
+				"sec-fetch-dest": "empty",
+				"sec-fetch-mode": "cors",
+				"sec-ch-ua-mobile": "?0",
+				'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
+				"logic": "PART",
+				"sec-fetch-site": "same-origin",
+				"X-Current-State": "https://sell.smartstore.naver.com/#/products/create",
+				"X-Current-Statename": "main.product.create",
+				"X-To-Statename": "main.product.create",
+				"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+			}
+			# user_agent = ""
+			referer = F"https://sell.smartstore.naver.com/"
+			# cookies = None
+			# timeout = (5, 15)
+			# allow_redirects = True
+			method = "GET"
+			# postdata = None
+			# data_type = None
+			# proxy setting
+			use_proxy = True
+			# proxy = {'http':"socks5://socks.marketingtool.co.kr:10000", 'https':"socks5://socks.marketingtool.co.kr:10000"}
+			proxy = None
+			response = ContentLoader.getContent(url, headers=headers, referer=referer, method=method, proxy=proxy, cookies=cookies)
+			log.printLog(response)
+			return response.text
+		except Exception as e:
+			log.printException(e)
+		return None
 	
 	def parsingInsertBulkLink(self, params):
 		try:

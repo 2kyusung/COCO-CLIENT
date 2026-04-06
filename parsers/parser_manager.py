@@ -268,7 +268,22 @@ class ParserManager:
 
 					for keyword in keyword_list:
 						if keyword in res_tag_list:
-							checked_keyword_list.append({'keyword':keyword, 'usable':1})
+							try:
+								res_restrict_tag = None
+								for _ in range(1,5):
+									res_restrict_tag = self.apiManager.parsingCheckRestrictTag({'cookies':self.getCookies(), 'keyword':keyword})
+									if res_restrict_tag:
+										break
+									time.sleep(0.5)
+								res_restrict_data_json = json.loads(res_restrict_tag)
+								if res_restrict_data_json.get('restricted', False) == False:	# 등록 제한이 없는 경우
+									checked_keyword_list.append({'keyword':keyword, 'usable':1})
+								else:
+									checked_keyword_list.append({'keyword':keyword, 'usable':0})
+							except Exception as e_res:
+								log.printException(e_res)
+								checked_keyword_list.append({'keyword':keyword, 'usable':0})
+								pass
 						else:
 							checked_keyword_list.append({'keyword':keyword, 'usable':0})
 				except Exception as e:

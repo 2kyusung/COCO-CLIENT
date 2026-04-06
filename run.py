@@ -377,8 +377,8 @@ class COCOClient(QMainWindow):
 
     def initUI(self):
         try:
-            self.client_version = "v1.1.4"
-            self.client_version_number = 5; # 서버 API GET_VERSION과 동일하게 변경 해야함.
+            self.client_version = "v1.1.5"
+            self.client_version_number = 6; # 서버 API GET_VERSION과 동일하게 변경 해야함.
             self.setWindowTitle(F"COCO {self.client_version}")
             self.setWindowIcon(QIcon('image\\coco_logo.png'))
             self.setGeometry(0, 0, 400, 450)
