@@ -369,16 +369,16 @@ class COCOClient(QMainWindow):
             super().__init__()
             self.loadConfigData()
             self.crawler_manager = CrawlerManager()
-            self.initUI()
             self.api_manager = ApiManager()
-            
+            self.initUI()
             self.log_list = []
         except Exception as e:
             log.printException(e)
 
     def initUI(self):
         try:
-            self.client_version = "v1.1.3"
+            self.client_version = "v1.1.4"
+            self.client_version_number = 5; # 서버 API GET_VERSION과 동일하게 변경 해야함.
             self.setWindowTitle(F"COCO {self.client_version}")
             self.setWindowIcon(QIcon('image\\coco_logo.png'))
             self.setGeometry(0, 0, 400, 450)
@@ -401,6 +401,7 @@ class COCOClient(QMainWindow):
             self.menu_setting.triggered.connect(self.openSetting)
 
             # file_menu = self.menubar.addMenu("테스트")
+
             # # Menu 편집 > 설정
             # self.menu_test1 = QAction("테스트1")     
             # file_menu.addAction(self.menu_test1)
@@ -449,7 +450,12 @@ class COCOClient(QMainWindow):
                 self.webview.resize(800, 800)
                 self.crawler_manager.setWebView(self.webview)
                 self.crawler_manager.start()
-                
+            
+
+            res_version = self.api_manager.getVersion();
+            if res_version != None:
+                if self.client_version_number < int(res_version):
+                    QMessageBox.information(self, '업데이트 필요', '최신 버전으로 업데이트 하세요', QMessageBox.Ok, QMessageBox.Ok)
 
             self.center()
             self.show()
